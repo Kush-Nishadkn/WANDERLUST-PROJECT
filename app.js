@@ -4,11 +4,15 @@ const mongoose=require("mongoose");
 const Listing=require("./models/listing.js");
 const path=require("path");
 
-// app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname,"/public")));
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
 
 app.use (express.urlencoded({extended:true}));
+const methodOverride=require("method-override");
+app.use(methodOverride("_method"));
+const ejsMate= require("ejs-mate");
+app.engine("ejs",ejsMate);
 
 
 
@@ -31,7 +35,10 @@ async function main() {
 app.get("/",(req,res)=>{
     res.send("Hello World");
 });
-// index route
+
+
+
+// INDEX ROUTE
 
 app.get("/listings",async(req,res)=>{
   const allListings= await Listing.find({});
@@ -40,13 +47,57 @@ app.get("/listings",async(req,res)=>{
    
   
 });
+// new route
+app.get("/listings/new",(req,res)=>{
+  res.render("listings/new");
+})
 
-// show route
+// SHOW ROUTE
+
+
 app.get("/listings/:id",async(req,res)=>{
   let {id}=req.params;
 const listing=await Listing.findById(id);
-  res.render("listings/show.ejs",{listing});
+  res.render("listings/show",{listing}); 
 });
+
+
+
+// create route
+app.post("/listings",async(req,res)=>{
+  // let {title,description,image,price,country,location}=req.body;
+ const newListing=new Listing(req.body.listing);
+ await newListing.save();
+  console.log("new listing was saved");
+  res.redirect("/listings");
+
+
+});
+
+// edit route
+app.get("/listings/:id/edit",async (req,res)=>{
+  let {id}=req.params;
+const listing=await Listing.findById(id);
+res.render("listings/edit",{listing})
+})
+
+
+// update route
+app.put("/listings/:id",async (req,res)=>{
+  let {id}=req.params;
+  await Listing.findByIdAndUpdate(id,{...req.body.listing});
+ res. redirect(`/listings/${id}`);
+     
+});
+
+app.delete("/listings/:id",async (req,res)=>{
+  let {id}=req.params;
+  let deletedLIsting=await Listing.findByIdAndDelete(id);
+  console.log(deletedLIsting);
+  res.redirect("/listings");
+})
+
+
 
 
 // app.get("/testListing",async(req,res)=>{
