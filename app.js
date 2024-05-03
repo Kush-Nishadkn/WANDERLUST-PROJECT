@@ -100,21 +100,21 @@ app.delete("/listings/:id",async (req,res)=>{
 
 
 
-app.get("/testListing",async(req,res)=>{
-    let sampleListing=new Listing({
-        title:"sample title",
-        description:"sample description",
-        image:"sample image",
-        price:1200,
-        location:"sample location",
+// app.get("/testListing",async(req,res)=>{
+//     let sampleListing=new Listing({
+//         title:"sample title",
+//         description:"sample description",
+      
+//         price:1200,
+//         location:"sample location",
        
-        country: "sample country",
+//         country: "sample country",
        
-    });
-   await sampleListing.save();
-   console.log("sample was saved");
-        res.send("Listing saved");
-});
+//     });
+//    await sampleListing.save();
+//    console.log("sample was saved");
+//         res.send("Listing saved");
+// });
    
 
 
